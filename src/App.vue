@@ -155,6 +155,9 @@
           <p>
             <a v-bind:href="explorerUrlForAddress(dappAddress)" target="_blank">{{dappAddress}}</a>
           </p>
+          <p>
+            <a v-bind:href="repoUrl" target="_blank">Source Code</a>
+          </p>
           <h5>{{trans("What's NASUSD")}}</h5>
           <p>{{intro}}</p>
           <hr>
@@ -270,7 +273,7 @@ export default {
       currentUserAddress: null,
       dappAuthorAddress: "n1aJXsZCGw4bsn5UJaqASrsmUqbfVPoeRG6",
       simulateFromAddress: "n1aJXsZCGw4bsn5UJaqASrsmUqbfVPoeRG6",
-      repoUrl: "https://coding.net/t/zoowii/p/nebusd",
+      repoUrl: "https://github.com/zoowii/nebusd",
       intro: trans("intro.text"),
       howToUse: trans("howtouse.text"),
       dismissSecs: 5,
