@@ -37,10 +37,11 @@
               <p>{{trans("Status")}}: {{configInfo.paused?"Paused":"Normal"}}</p>
               <p v-if="!configInfo.allowBigAmount">{{trans("Suspended trading with big amout(over 10NAS)")}}</p>
               <p>{{trans("NASUSD is NRC20 token")}}</p>
-              <p>{{trans("Out Market Price")}}: {{configInfo.price}}USD</p>
-              <p>{{trans("NAS Buy Price")}}: {{buy1Price()}}NASUSD</p>
-              <p>{{trans("NAS Sell Price")}}: {{sell1Price()}}NASUSD</p>
-              <p>{{trans("Total Supply of NASUSD")}}: {{nasusdAmountToText(totalSupply)}}</p>
+              <p style="color: red;">{{trans("notice.text")}}</p>
+              <p style="font-size: 12px;">{{trans("Out Market Price")}}: {{configInfo.price}}USD</p>
+              <p style="font-size: 12px;">{{trans("NAS Buy Price")}}: {{buy1Price()}}NASUSD</p>
+              <p style="font-size: 12px;">{{trans("NAS Sell Price")}}: {{sell1Price()}}NASUSD</p>
+              <p style="font-size: 12px;">{{trans("Total Supply of NASUSD")}}: {{nasusdAmountToText(totalSupply)}}</p>
             </div>
             <div>
               <md-radio v-model="currentLang" value="english" @click="changeLang('english')">English <small v-if="currentLang==='english'">(Current)</small></md-radio>
@@ -77,21 +78,21 @@
                 <div class="md-list-item-text" style="text-align: center;">
                   <span style="color: #aaaaaa; font-size: 12px; margin-bottom: 5px;">{{order.maker}}</span>
                   <p>
-                     want sell {{weiToNas(order.remainingSellAmount)}} NAS on price {{order.sellPrice}} NASUSD
+                     {{trans("want sell")}} {{weiToNas(order.remainingSellAmount)}} NAS on price {{order.sellPrice}} NASUSD
                   </p>
                 </div>
               </md-list-item>
               <span v-if="sellOrders.length===0">{{trans("No sell orders")}}</span>
-              <span>{{trans("Up is sell orders")}}</span>
+              <!-- <span>{{trans("Up is sell orders")}}</span> -->
               <md-divider class="md-inset"></md-divider>
-              <span>{{trans("Below is buy orders")}}</span>
+              <!-- <span>{{trans("Below is buy orders")}}</span> -->
               <!-- 买单队列 -->
               <span v-if="buyOrders.length===0">{{trans("No buy orders")}}</span>
               <md-list-item v-for="order in buyOrders" :key="order.id">
                 <div class="md-list-item-text" style="text-align: center; border-bottom: solid 1px #cccccc; padding-bottom: 5px;">
                   <span style="color: #aaaaaa; font-size: 12px; margin-bottom: 5px;">{{order.maker}}</span>
                   <p>
-                    want buy {{weiToNas(order.remainingBuyAmount/order.buyPrice)}} NAS on price {{order.buyPrice}} NASUSD
+                    {{trans("want buy")}} {{weiToNas(order.remainingBuyAmount/order.buyPrice)}} NAS on price {{order.buyPrice}} NASUSD
                   </p>
                 </div>
               </md-list-item>
@@ -111,11 +112,23 @@
               
               <md-tab id="tab-mint" md-label="Mint" to="/components/tabs/mint">
                 <div>
+                  <h5>{{trans("Mortgage NAS to mint NASUSD")}}</h5>
                   <md-field>
                     <label>{{trans("NASUSD Amount")}}</label>
                     <md-input type="number" v-model="mintForm.nasusdAmount" />
                   </md-field>
                   <md-button type="button" class="md-primary" @click="mintNasUsd(mintForm)">{{trans("Mortgage And Mint")}}</md-button>
+                </div>
+                <div>
+                  <h5>{{trans("Convert NASUSD to NAS")}}</h5>
+                  <p>
+                    <span>Your NASUSD Balance: {{weiToNas(currentUserBalance)}} NASUSD</span>
+                  </p>
+                  <md-field>
+                    <label>{{trans("NASUSD Amount")}}</label>
+                    <md-input type="number" v-model="convertForm.nasusdAmount" />
+                  </md-field>
+                  <md-button type="button" class="md-primary" @click="convertNasUsd(convertForm)">{{trans("Convert NASUSD to NAS")}}</md-button>
                 </div>
               </md-tab>
 
@@ -133,20 +146,6 @@
                   <MortgageList :mortgages="allMortgages" :configInfo="configInfo" :currentUserAddress="currentUserAddress" @on-clear-mortgage="clearMortgage"></MortgageList>
                 </div>
               </md-tab>
-
-              <md-tab id="tab-convert-nasusd" md-label="Convert" to="/components/tabs/Convert">
-                <div>
-                  <p>
-                    <span>Your NASUSD Balance: {{weiToNas(currentUserBalance)}} NASUSD</span>
-                  </p>
-                  <md-field>
-                    <label>{{trans("NASUSD Amount")}}</label>
-                    <md-input type="number" v-model="convertForm.nasusdAmount" />
-                  </md-field>
-                  <md-button type="button" class="md-primary" @click="convertNasUsd(convertForm)">{{trans("Convert NASUSD to NAS")}}</md-button>
-                </div>
-              </md-tab>
-
             </md-tabs>
 
           </div>
@@ -174,10 +173,10 @@
                 <div class="md-list-item-text" style="text-align: center; border-bottom: solid 1px #cccccc; padding-bottom: 15px;">
                   <span style="color: #aaaaaa; font-size: 12px; margin-bottom: 5px;">{{order.maker}}</span>
                   <p v-if="order.isBuy">
-                    want buy {{weiToNas(order.remainingBuyAmount/order.buyPrice)}} NAS on price {{order.buyPrice}} NASUSD
+                    {{trans("want buy")}} {{weiToNas(order.remainingBuyAmount/order.buyPrice)}} NAS on price {{order.buyPrice}} NASUSD
                   </p>
                   <p v-if="!order.isBuy">
-                     want sell {{weiToNas(order.remainingSellAmount)}} NAS on price {{order.sellPrice}} NASUSD
+                     {{trans("want sell")}} {{weiToNas(order.remainingSellAmount)}} NAS on price {{order.sellPrice}} NASUSD
                   </p>
                   <div style="margin-top: 10px;">
                     <md-button class="md-raised md-accent" style="max-width: 200px;" @click="cancelOrder(order)">Cancel</md-button>
@@ -267,7 +266,7 @@ export default {
       title: "NASUSD",
       menuVisible: false,
       currentPage: "exchange",
-      dappAddress: "n1oLnMbjfuiPRB1BKyB4tP5KzNZNGtB2Z33", // tx hash: dbb058775b92afbaf274db2e2f3ebc34f21a7bf3a7e4af4ec024d940d0ebb5b6
+      dappAddress: "n1t6Ck67YpgeZNGKbEZJx5TPcR2dxm7emqT", // tx hash: b3229b40229e42aee8574f6bb8ec0c4edbc7e6d80a79832cd37c3b96924d91c3
       currentUserAddress: null,
       dappAuthorAddress: "n1aJXsZCGw4bsn5UJaqASrsmUqbfVPoeRG6",
       simulateFromAddress: "n1aJXsZCGw4bsn5UJaqASrsmUqbfVPoeRG6",

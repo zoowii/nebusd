@@ -15,8 +15,10 @@ let chinese = {
     "you have not enough NASUSD balance to clear this mortgage, please get more NASUSD": "你没有足够NASUSD来平仓这个抵押单，请获取足够NASUSD后再尝试",
     "No sell orders": "目前没有卖单",
     "No buy orders": "目前没有买单",
+    "want buy": "想买",
+    "want sell": "想卖",
     "Up is sell orders": "以上是卖单",
-    "Below is buy orders": "以上是买单",
+    "Below is buy orders": "以下是买单",
     "View My Orders": "我的挂单",
     "order cancel submited": "取消订单已提交",
     "order cancel confirmed": "取消订单已确认",
@@ -61,6 +63,9 @@ let chinese = {
     "invalid amount format": "错误的数量的格式",
     "to convert NASUSD amount can't be empty": "清算的数量不可为空",
     "Suspended trading with big amout(over 10NAS)": "已暂停大额交易",
+    "notice.text": `警告: 本合约交易所的性能和安全性尚未得到足够时间的检验，建议小额交易尝试`,
+    "Mortgage NAS to mint NASUSD": "抵押NAS发行NASUSD",
+    "Convert NASUSD to NAS": "NASUSD清算为NAS",
 }
 
 let english = {
@@ -77,6 +82,7 @@ let english = {
     You can also mint NASUSD by mortgage at least 3times values NAS to smart contract. Notice that the mortgage mey be destroyed when price is not safe enough(too low) or some other acquire convert NASUSD to same value NAS.
     When you have some NASUSD, you can also convert them to some NAS with almost equal value, on market-price.
     `,
+    "notice.text": `Notice: This exchange based on contract have not yet enough time to test. Suggesting a small transaction attempt`,
 }
 
 let dicts = { chinese, english }
