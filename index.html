@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>NASUSD -- smart coin anchored to USD</title>
+  <link rel="stylesheet" href="dist/main.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+
+<body class="text-cover">
+  <div id="app"></div>
+  <script src="js_lib/bignumber.min.js"></script>
+  <script src="js_lib/nebulas.js"></script>
+  <script src="js_lib/nebPay.js"></script>
+  <script>
+    var useTestNet = window.location.search.indexOf('testnet=true') >= 0 ? true : false;
+    var NebPay = require("nebpay");
+    var nebulas = require("nebulas");
+    var nebPay = new NebPay();
+    window.neb = new nebulas.Neb();
+    window.neb.setRequest(new nebulas.HttpRequest(useTestNet ? "https://testnet.nebulas.io" : "https://mainnet.nebulas.io"));
+  </script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="js_lib/app.bundle.js"></script>
+  <script src="dist/build.js"></script>
+</body>
+
+</html>
