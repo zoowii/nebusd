@@ -692,7 +692,7 @@ export default {
       var self = this;
       directCallOnChainTx(
         this.dappAddress,
-        nasAmount.toString(),
+        nasAmount.toFixed(8),
         "mint",
         JSON.stringify([]),
         function(data) {
