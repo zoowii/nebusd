@@ -387,7 +387,7 @@ export default {
     loadAllMortgages() {
       var self = this;
       simulateCallContract(
-        this.currentUserAddress,
+        this.simulateFromAddress,
         this.dappAddress,
         "0",
         "getAllMortgageList",
@@ -401,7 +401,7 @@ export default {
     updateMyMortgages(userAddress) {
       var self = this;
       simulateCallContract(
-        this.currentUserAddress,
+        this.simulateFromAddress,
         this.dappAddress,
         "0",
         "getMortgageListOfUser",
@@ -417,7 +417,7 @@ export default {
       if (this.currentUserAddress) {
         var self = this;
         simulateCallContract(
-          this.currentUserAddress,
+          this.simulateFromAddress,
           this.dappAddress,
           "0",
           "balanceOf",
@@ -432,7 +432,7 @@ export default {
     loadOrders() {
       var self = this;
       simulateCallContract(
-        this.currentUserAddress,
+        this.simulateFromAddress,
         this.dappAddress,
         "0",
         "getBuyOrders",
@@ -443,7 +443,7 @@ export default {
         })
         .catch(this.showErrorInfo.bind(this));
       simulateCallContract(
-        this.currentUserAddress,
+        this.simulateFromAddress,
         this.dappAddress,
         "0",
         "getSellOrders",
@@ -457,7 +457,7 @@ export default {
     loadConfig() {
       var self = this;
       simulateCallContract(
-        this.currentUserAddress,
+        this.simulateFromAddress,
         this.dappAddress,
         "0",
         "getConfig",
@@ -468,7 +468,7 @@ export default {
         })
         .catch(this.showErrorInfo.bind(this));
       simulateCallContract(
-        this.currentUserAddress,
+        this.simulateFromAddress,
         this.dappAddress,
         "0",
         "totalSupply",
@@ -482,7 +482,7 @@ export default {
     loadStages() {
       var self = this;
       simulateCallContract(
-        this.currentUserAddress,
+        this.simulateFromAddress,
         this.dappAddress,
         "0",
         "getStages",
@@ -502,7 +502,7 @@ export default {
       var self = this;
       // load my babies of current user
       simulateCallContract(
-        this.currentUserAddress,
+        this.simulateFromAddress,
         this.dappAddress,
         "0",
         "getBabiesByUser",
