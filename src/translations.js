@@ -53,6 +53,7 @@ let chinese = {
     "feed": "喂价",
     "Menu": "菜单",
     "Donate": "捐赠",
+    "Transfer": "转账",
     "intro.text": `<p>NASUSD是一种基于星云链的智能代币+合约交易所，锚定美元。</p>
     <p>NASUSD原理类似BitShares上的BITCNY，你可以通过抵押至少3倍市值的NAS来发行NASUSD，</p>
     <p>也可以在本合约交易所中做NAS和NASUSD的交易。同时NASUSD也是一种NRC20资产，你可以直接转移给其他人</p>`,
@@ -70,6 +71,9 @@ let chinese = {
     "title.text": "NASUSD",
     "Contract Address": "合约地址",
     "Login Successfully! Please wait 20 seconds and refresh page": "登录成功，请20秒后重新刷新页面！",
+    "Transfer NASUSD to other address": "转账NASUSD到其他地址",
+    "Address can't be empty": "地址不可为空",
+    "To Address": "目标地址",
 }
 
 let english = {

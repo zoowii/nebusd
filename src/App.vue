@@ -25,6 +25,10 @@
             <span class="md-list-item-text">{{trans("mortgage.mint")}}</span>
           </md-list-item>
 
+          <md-list-item @click="currentPage='transfer'">
+            <span class="md-list-item-text">{{trans("Transfer")}}</span>
+          </md-list-item>
+
           <md-list-item @click="currentPage='help'">
             <span class="md-list-item-text">{{trans("Help")}}</span>
           </md-list-item>
@@ -150,6 +154,23 @@
 
           </div>
         </div>
+        <div v-show="currentPage==='transfer'" style="text-align: center;">
+          <h5>{{trans("Transfer NASUSD to other address")}}</h5>
+          <div>
+            <p>
+              <span>Your NASUSD Balance: {{weiToNas(currentUserBalance)}} NASUSD</span>
+            </p>
+            <md-field>
+              <label>{{trans("NASUSD Amount")}}</label>
+              <md-input type="number" v-model="transferForm.nasusdAmount" />
+            </md-field>
+            <md-field>
+              <label>{{trans("To Address")}}</label>
+              <md-input type="text" v-model="transferForm.toAddress" />
+            </md-field>
+            <md-button type="button" class="md-primary" @click="transferNasUsd(transferForm)">{{trans("Transfer")}}</md-button>
+          </div>
+        </div>
         <div v-show="currentPage==='help'" style="text-align: center;">
           <h5>{{trans("Contract Address")}}</h5>
           <p>
@@ -173,19 +194,19 @@
           <h5>{{trans("My Orders")}}</h5>
           <md-list class="md-triple-line md-dense">
             <md-list-item v-for="order in myOrders" :key="order.id">
-                <div class="md-list-item-text" style="text-align: center; border-bottom: solid 1px #cccccc; padding-bottom: 15px;">
-                  <span style="color: #aaaaaa; font-size: 12px; margin-bottom: 5px;">{{order.maker}}</span>
-                  <p v-if="order.isBuy">
-                    {{trans("want buy")}} {{weiToNas(order.remainingBuyAmount/order.buyPrice)}} NAS on price {{order.buyPrice}} NASUSD
-                  </p>
-                  <p v-if="!order.isBuy">
-                     {{trans("want sell")}} {{weiToNas(order.remainingSellAmount)}} NAS on price {{order.sellPrice}} NASUSD
-                  </p>
-                  <div style="margin-top: 10px;">
-                    <md-button class="md-raised md-accent" style="max-width: 200px;" @click="cancelOrder(order)">Cancel</md-button>
-                  </div>
+              <div class="md-list-item-text" style="text-align: center; border-bottom: solid 1px #cccccc; padding-bottom: 15px;">
+                <span style="color: #aaaaaa; font-size: 12px; margin-bottom: 5px;">{{order.maker}}</span>
+                <p v-if="order.isBuy">
+                  {{trans("want buy")}} {{weiToNas(order.remainingBuyAmount/order.buyPrice)}} NAS on price {{order.buyPrice}} NASUSD
+                </p>
+                <p v-if="!order.isBuy">
+                    {{trans("want sell")}} {{weiToNas(order.remainingSellAmount)}} NAS on price {{order.sellPrice}} NASUSD
+                </p>
+                <div style="margin-top: 10px;">
+                  <md-button class="md-raised md-accent" style="max-width: 200px;" @click="cancelOrder(order)">Cancel</md-button>
                 </div>
-              </md-list-item>
+              </div>
+            </md-list-item>
           </md-list>
         </div>
         <div v-show="currentPage==='feed_price'" style="text-align: center;">
@@ -298,7 +319,8 @@ export default {
       myOrders: [],
       currentLang: null,
       convertForm: {},
-      loading: true
+      loading: true,
+      transferForm: {}
     };
   },
   watch: {
@@ -642,6 +664,44 @@ export default {
         this.showErrorInfo.bind(this)
       );
     },
+    transferNasUsd(form) {
+      var amount = form.nasusdAmount;
+      if (!amount) {
+        return this.showErrorInfo(
+          trans("to convert NASUSD amount can't be empty")
+        );
+      }
+      amount = new BigNumber(amount);
+      if (!amount || amount.lte(0)) {
+        return this.showErrorInfo(trans("invalid amount format"));
+      }
+      var toAddress = (form.toAddress || "").trim();
+      if (!toAddress) {
+        return this.showErrorInfo(trans("Address can't be empty"));
+      }
+      var self = this;
+      directCallOnChainTx(
+        this.dappAddress,
+        "0",
+        "transfer",
+        JSON.stringify([
+          toAddress,
+          this.nasToWei(amount.toString()).toString()
+        ]),
+        function(data) {
+          self.showSuccessInfo("Transfer Operation Submited");
+          self.transferForm = {};
+        },
+        function(data) {
+          self.updateCurrentUserAddress();
+          self.showSuccessInfo("Transfer Operation confirmed");
+          if (self.currentUserAddress) {
+            self.updateCurrentUserBalanceInfo();
+          }
+        },
+        this.showErrorInfo.bind(this)
+      );
+    },
     convertNasUsd(form) {
       var amount = form.nasusdAmount;
       if (!amount) {
@@ -660,7 +720,7 @@ export default {
         "clearSmartCoin",
         JSON.stringify([this.nasToWei(amount.toString()).toString()]),
         function(data) {
-          self.showSuccessInfo("Convert Operation Done");
+          self.showSuccessInfo("Convert Operation Submited");
         },
         function(data) {
           self.updateCurrentUserAddress();
