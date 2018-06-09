@@ -1,11 +1,16 @@
 <template>
     <div class="page-container">
+      <Loading :show="loading"></Loading>
     <md-app md-mode="reveal">
       <md-app-toolbar class="md-primary">
         <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
           <i class="el-icon-setting"></i>
         </md-button>
         <span class="md-title">{{title}}</span>
+        <div class="md-toolbar-section-end">
+          <md-radio v-model="currentLang" value="english" @click="changeLang('english')">English</md-radio>
+          <md-radio v-model="currentLang" value="chinese" @click="changeLang('chinese')">中文</md-radio>
+        </div>
       </md-app-toolbar>
 
       <md-app-drawer :md-active.sync="menuVisible">
@@ -36,16 +41,11 @@
             <div>
               <p>{{trans("Status")}}: {{configInfo.paused?"Paused":"Normal"}}</p>
               <p v-if="!configInfo.allowBigAmount">{{trans("Suspended trading with big amout(over 10NAS)")}}</p>
-              <p>{{trans("NASUSD is NRC20 token")}}</p>
               <p style="color: red;">{{trans("notice.text")}}</p>
               <p style="font-size: 12px;">{{trans("Out Market Price")}}: {{configInfo.price}}USD</p>
               <p style="font-size: 12px;">{{trans("NAS Buy Price")}}: {{buy1Price()}}NASUSD</p>
               <p style="font-size: 12px;">{{trans("NAS Sell Price")}}: {{sell1Price()}}NASUSD</p>
               <p style="font-size: 12px;">{{trans("Total Supply of NASUSD")}}: {{nasusdAmountToText(totalSupply)}}</p>
-            </div>
-            <div>
-              <md-radio v-model="currentLang" value="english" @click="changeLang('english')">English <small v-if="currentLang==='english'">(Current)</small></md-radio>
-              <md-radio v-model="currentLang" value="chinese" class="md-primary" @click="changeLang('chinese')">中文 <small v-if="currentLang==='chinese'">(当前)</small></md-radio>
             </div>
             <div v-if="currentUserAddress && currentUserAddress===configInfo.owner">
               <p>Fee Balance: {{weiToNas(configInfo.ownerFeeBalance)}}</p>
@@ -106,7 +106,7 @@
             <md-tabs md-sync-route md-active-tab="tab-mortgage-home">
               <md-tab id="tab-mortgage-home" md-label="Home" to="/components/tabs/home">
                 {{trans("Introduction")}}
-                <p>{{intro}}</p>
+                <p v-html="intro"></p>
               </md-tab>
 
               
@@ -151,22 +151,22 @@
           </div>
         </div>
         <div v-show="currentPage==='help'" style="text-align: center;">
-          <h5>Contract Address</h5>
+          <h5>{{trans("Contract Address")}}</h5>
           <p>
             <a v-bind:href="explorerUrlForAddress(dappAddress)" target="_blank">{{dappAddress}}</a>
           </p>
           <p>
-            <a v-bind:href="repoUrl" target="_blank">Source Code</a>
+            <md-button type="button" class="md-primary" @click="goToRepoUrl">Source Code</md-button>
+            <md-button type="button" class="md-primary" @click="donate">{{trans('Donate')}}</md-button>
           </p>
           <h5>{{trans("What's NASUSD")}}</h5>
-          <p>{{intro}}</p>
+          <p v-html="intro"></p>
           <hr>
           <h5>{{trans("How to use NASUSD")}}</h5>
-          <p>
-            {{howToUse}}
+          <p v-html="howToUse">
           </p>
           <p>
-            <md-button type="button" class="md-primary" @click="donate">{{trans('Donate')}}</md-button>
+            
           </p>
         </div>
         <div v-show="currentPage==='my_orders'" style="text-align: center;">
@@ -258,15 +258,18 @@ function explorerUrlForAddress(address) {
 }
 
 import MortgageList from "./MortgageList.vue";
+import Loading from "./Loading.vue";
+import * as _ from "underscore";
 
 export default {
   name: "app",
   components: {
-    MortgageList: MortgageList
+    MortgageList: MortgageList,
+    Loading: Loading
   },
   data() {
     return {
-      title: "NASUSD",
+      title: trans("title.text"),
       menuVisible: false,
       currentPage: "exchange",
       dappAddress: "n1t6Ck67YpgeZNGKbEZJx5TPcR2dxm7emqT", // tx hash: b3229b40229e42aee8574f6bb8ec0c4edbc7e6d80a79832cd37c3b96924d91c3
@@ -294,7 +297,8 @@ export default {
       buysellForm: {},
       myOrders: [],
       currentLang: null,
-      convertForm: {}
+      convertForm: {},
+      loading: true
     };
   },
   watch: {
@@ -306,6 +310,12 @@ export default {
     this.currentLang = this.getLang();
     var self = this;
     this.currentUserAddress = localStorage["currentUserAddress"];
+    if (
+      this.currentUserAddress === "null" ||
+      this.currentUserAddress === "undefined"
+    ) {
+      this.currentUserAddress = null;
+    }
     if (this.currentUserAddress) {
       this.simulateFromAddress = this.currentUserAddress;
       this.onUpdateCurrentUserAddress();
@@ -339,6 +349,7 @@ export default {
       });
     }, 3000);
 
+    this.loading = false;
     this.loadExchangePage();
     this.loadAllMortgages();
   },
@@ -431,6 +442,7 @@ export default {
     },
     loadOrders() {
       var self = this;
+      this.loading = true;
       simulateCallContract(
         this.simulateFromAddress,
         this.dappAddress,
@@ -439,6 +451,7 @@ export default {
         JSON.stringify([])
       )
         .then(function(data) {
+          self.loading = false;
           self.buyOrders = data;
         })
         .catch(this.showErrorInfo.bind(this));
@@ -456,6 +469,7 @@ export default {
     },
     loadConfig() {
       var self = this;
+      this.loading = true;
       simulateCallContract(
         this.simulateFromAddress,
         this.dappAddress,
@@ -465,6 +479,7 @@ export default {
       )
         .then(function(data) {
           self.configInfo = data;
+          self.loading = false;
         })
         .catch(this.showErrorInfo.bind(this));
       simulateCallContract(
@@ -476,24 +491,6 @@ export default {
       )
         .then(function(data) {
           self.totalSupply = data;
-        })
-        .catch(this.showErrorInfo.bind(this));
-    },
-    loadStages() {
-      var self = this;
-      simulateCallContract(
-        this.simulateFromAddress,
-        this.dappAddress,
-        "0",
-        "getStages",
-        JSON.stringify([])
-      )
-        .then(function(data) {
-          self.stages = data;
-          self.stages.forEach(function(stage) {
-            stage.value = stage.id;
-            stage.text = stage.name;
-          });
         })
         .catch(this.showErrorInfo.bind(this));
     },
@@ -791,64 +788,6 @@ export default {
         this.showErrorInfo.bind(this)
       );
     },
-    onSubmitCreateBabyLog(evt) {
-      evt.preventDefault();
-      console.log(this.createBabyForm);
-      var self = this;
-      // TODO: check form
-      directCallOnChainTx(
-        this.dappAddress,
-        "0",
-        "createBabyLog",
-        JSON.stringify([
-          this.currentBaby.id,
-          this.createBabyLogForm.stageId,
-          this.createBabyLogForm.title,
-          this.createBabyLogForm.content,
-          this.createBabyLogForm.stageTimeCount
-        ]),
-        function(data) {
-          self.showSuccessInfo("操作成功");
-          self.currentPage = "view_baby";
-        },
-        function(data) {
-          self.updateCurrentUserAddress();
-          self.showSuccessInfo("添加宝宝成长日记完成");
-          if (self.currentPage === "view_baby") {
-            self.viewBabyLogs(self.currentBaby);
-          }
-        },
-        this.showErrorInfo.bind(this)
-      );
-    },
-    onResetCreateBabyForm(evt) {
-      evt.preventDefault();
-      this.createBabyForm = { gender: null };
-    },
-    onSubmitCreateBaby(evt) {
-      evt.preventDefault();
-      console.log(this.createBabyForm);
-      var self = this;
-      directCallOnChainTx(
-        this.dappAddress,
-        "0",
-        "createBaby",
-        JSON.stringify([
-          this.createBabyForm.nickName,
-          this.createBabyForm.description,
-          this.createBabyForm.gender,
-          null
-        ]),
-        function(data) {
-          self.showSuccessInfo("操作成功");
-          self.currentPage = "baby_list";
-        },
-        function(data) {
-          self.updateCurrentUserAddress();
-        },
-        this.showErrorInfo.bind(this)
-      );
-    },
     showSuccessInfo(msg) {
       console.log("info: ", msg);
       if (msg.msg) {
@@ -928,7 +867,9 @@ export default {
         "donate",
         JSON.stringify([]),
         function(data) {
-          self.showSuccessInfo("登录成功，请20秒后重新刷新页面！");
+          self.showSuccessInfo(
+            trans("Login Successfully! Please wait 20 seconds and refresh page")
+          );
         },
         function(data) {
           self.updateCurrentUserAddress();
@@ -936,26 +877,29 @@ export default {
         this.showErrorInfo
       );
     },
-    showErrorInfo(error) {
-      console.log("info: ", error);
+    goToRepoUrl() {
+      window.open(this.repoUrl, "_blank");
+    },
+    showErrorInfo: _.throttle(function(error) {
+      this.loading = false;
+      console.log("error: ", error);
       if (error.msg) {
         error = error.msg;
       }
-      error = error || "出现错误";
+      error = error || "Error happen";
       var errorStr = error.toString();
       if (errorStr.indexOf("payId ") === 0) {
         return;
       }
       if (this.$notify) {
         this.$notify.error({
-          title: "错误",
+          title: "Error",
           message: errorStr
         });
       } else {
-        console.log(errorStr);
         this.showAlert("danger", errorStr);
       }
-    }
+    }, 200)
   }
 };
 </script>

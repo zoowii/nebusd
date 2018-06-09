@@ -36,8 +36,8 @@ let chinese = {
     "Total Supply of NASUSD": "NASUSD总供应量",
     "NASUSD is NRC20 token": "NASUSD是一种NRC20资产",
     "Out Market Price": "NAS外部交易所价格",
-    "NAS Buy Price": "NAS本内盘买一价",
-    "NAS Sell Price": "NAS本内盘卖一价",
+    "NAS Buy Price": "NAS买一价",
+    "NAS Sell Price": "NAS卖一价",
     "NAS/NASUSD Price": "NAS价格(/NASUSD)",
     "NAS Amount": "NAS数量",
     "What's NASUSD": "什么是NASUSD",
@@ -53,11 +53,12 @@ let chinese = {
     "feed": "喂价",
     "Menu": "菜单",
     "Donate": "捐赠",
-    "intro.text": `NASUSD是一种基于星云链的智能代币+合约交易所，锚定美元。NASUSD原理类似BitShares上的BITCNY，你可以通过抵押至少3倍市值的NAS来发行NASUSD，
-    也可以在本合约交易所种做NAS和NASUSD的交易。同时NASUSD也是一种NRC20资产，你可以直接转移给其他人`,
-    "howtouse.text": `你可以在本合约交易所种和其他人交易NAS/NASUSD，也可以通过抵押至少3倍市值的NAS发行NASUSD。
-    需要注意的是抵押单的抵押率会随着市价降低而降低，当抵押率降低到一定程度（160%)时会爆仓，或者抵押率较低的抵押单也可能因为其他用户清算NASUSD而平仓。
-    如果您是NASUSD的持有者，您可以通过清算您手上的NASUSD将NASUSD清算为差不多市值的NAS`,
+    "intro.text": `<p>NASUSD是一种基于星云链的智能代币+合约交易所，锚定美元。</p>
+    <p>NASUSD原理类似BitShares上的BITCNY，你可以通过抵押至少3倍市值的NAS来发行NASUSD，</p>
+    <p>也可以在本合约交易所中做NAS和NASUSD的交易。同时NASUSD也是一种NRC20资产，你可以直接转移给其他人</p>`,
+    "howtouse.text": `<p>你可以在本合约交易所种和其他人交易NAS/NASUSD，也可以通过抵押至少3倍市值的NAS发行NASUSD.</p>
+    <p>需要注意的是抵押单的抵押率会随着市价降低而降低，当抵押率降低到一定程度（160%)时会爆仓，或者抵押率较低的抵押单也可能因为其他用户清算NASUSD而平仓.</p>
+    <p>如果您是NASUSD的持有者，您可以通过清算您手上的NASUSD将NASUSD清算为差不多市值的NAS</p>`,
     "donate successfully!": "捐赠成功，你得到了一份作者的感谢！",
     "Convert NASUSD to NAS": "清算NASUSD为NAS",
     "invalid amount format": "错误的数量的格式",
@@ -66,6 +67,9 @@ let chinese = {
     "notice.text": `警告: 本合约交易所的性能和安全性尚未得到足够时间的检验，建议小额交易尝试`,
     "Mortgage NAS to mint NASUSD": "抵押NAS发行NASUSD",
     "Convert NASUSD to NAS": "NASUSD清算为NAS",
+    "title.text": "NASUSD",
+    "Contract Address": "合约地址",
+    "Login Successfully! Please wait 20 seconds and refresh page": "登录成功，请20秒后重新刷新页面！",
 }
 
 let english = {
@@ -73,16 +77,18 @@ let english = {
     "mortgage.mint": "Mint",
     "feed": "Feed",
     "intro.text": `
-    NASUSD is a smart token and exchange dapp on nebulas chain, anchored to USD. Its principle is similar to BITUSD on bitshares.
-    You can mint NASUSD by mortgage NAS(at least 3 times values), exchange NASUSD to NAS, exchagne NAS/NASUSD with each other, etc.
-    At the same time, NASUSD is also a NRC20 token, so you can transfer it to other very friendly by NAS wallet.
+    <p>NASUSD is a smart token and exchange dapp on nebulas chain, anchored to USD.</p> 
+    <p>Its principle is similar to BITUSD on bitshares.</p>
+    <p>You can mint NASUSD by mortgage NAS(at least 3 times values), exchange NASUSD to NAS, exchagne NAS/NASUSD with each other, etc.</p>
+    <p>At the same time, NASUSD is also a NRC20 token, so you can transfer it to other very friendly by NAS wallet.</p>
     `,
     "howtouse.text": `
-    You can exchagne NASUSD and NAS with each other in this dapp.
-    You can also mint NASUSD by mortgage at least 3times values NAS to smart contract. Notice that the mortgage mey be destroyed when price is not safe enough(too low) or some other acquire convert NASUSD to same value NAS.
-    When you have some NASUSD, you can also convert them to some NAS with almost equal value, on market-price.
+    <p>You can exchagne NASUSD and NAS with each other in this dapp.</p>
+    <p>You can also mint NASUSD by mortgage at least 3times values NAS to smart contract. Notice that the mortgage mey be destroyed when price is not safe enough(too low) or some other acquire convert NASUSD to same value NAS.</p>
+    <p>When you have some NASUSD, you can also convert them to some NAS with almost equal value, on market-price.</p>
     `,
     "notice.text": `Notice: This exchange based on contract have not yet enough time to test. Suggesting a small transaction attempt`,
+    "title.text": "NASUSD",
 }
 
 let dicts = { chinese, english }
