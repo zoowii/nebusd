@@ -565,7 +565,7 @@ ContractService.prototype = {
             this._allMortgageIds = allMortgageIds
         }
         // 抵押品返还给用户
-        if (!Blockchain.transfer(mortgageItem.owner, mortgageItem.collateralBalance)) {
+        if (!Blockchain.transfer(mortgageItem.owner, new BigNumber(mortgageItem.collateralBalance.toFixed(10)))) {
             throw new Error("transfer coin to user error")
         }
     },
@@ -613,7 +613,7 @@ ContractService.prototype = {
                 let mortgageItemOwnerCanGetBackNas = mortgageItem.collateralBalance.minus(mortgageItem.tokenBalance.div(price)) // 抵押品拥有者能拿回的balance
                 sumClearedNasUsd = sumClearedNasUsd.plus(mortgageItem.tokenBalance)
                 if (mortgageItemOwnerCanGetBackNas.gt(0)) {
-                    if (!Blockchain.transfer(mortgageItem.owner, mortgageItemOwnerCanGetBackNas)) {
+                    if (!Blockchain.transfer(mortgageItem.owner, new BigNumber(mortgageItemOwnerCanGetBackNas.toFixed(10)))) {
                         throw new Error("transfer to mortgage owner failed")
                     }
                 }
@@ -652,7 +652,7 @@ ContractService.prototype = {
         config.ownerFeeBalance = config.ownerFeeBalance.plus(fee)
         this._config = config
         if (clearerCanGetNasExcludeFee.gt(0)) {
-            if (!Blockchain.transfer(from, clearerCanGetNasExcludeFee)) {
+            if (!Blockchain.transfer(from, new BigNumber(clearerCanGetNasExcludeFee.toFixed(10)))) {
                 throw new Error("transfer to clearer failed")
             }
         }
@@ -858,7 +858,7 @@ ContractService.prototype = {
         this.balances.set(from, balance)
 
         if (toTransferToBuyerNasAmount.gt(0)) {
-            if (!Blockchain.transfer(from, toTransferToBuyerNasAmount)) {
+            if (!Blockchain.transfer(from, new BigNumber(toTransferToBuyerNasAmount.toFixed(10)))) {
                 throw new Error("buy failed")
             }
         }
@@ -904,7 +904,7 @@ ContractService.prototype = {
                     balance = balance.plus(toTradeBaseUnitAmount)
                     remainingWantSellNasAmount = new BigNumber(0)
                     // 给买家转NAS
-                    if (!Blockchain.transfer(buyOrder.maker, toTradeNasAmount)) {
+                    if (!Blockchain.transfer(buyOrder.maker, new BigNumber(toTradeNasAmount.toFixed(10)))) {
                         throw new Error("transfer to buy order maker failed")
                     }
 
@@ -1000,7 +1000,7 @@ ContractService.prototype = {
         } else {
             // 退回NAS
             let amountToBack = order.remainingSellAmount
-            if (!Blockchain.transfer(order.maker, amountToBack)) {
+            if (!Blockchain.transfer(order.maker, new BigNumber(amountToBack.toFixed(10)))) {
                 throw new Error("transfer to user failed when cancel order")
             }
         }
