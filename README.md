@@ -16,12 +16,6 @@ npm run dev
 
 * `smartContract/nebusd.ts`
 
-## TODO
-
-* 清算和抵押的计算器
-* NASUSD-NAS交易
-* 抵押和平仓
-
 ## Build Setup
 
 ``` bash
